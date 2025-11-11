@@ -6,10 +6,35 @@
 <title>Tech Giants Stock</title> 
 <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
 <script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .flip-card {
+    perspective: 1000px;
+  }
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .flip-card-back {
+    transform: rotateY(180deg);
+  }
+</style>
 </head>
 <body class="bg-gray-100 min-h-screen p-6 flex flex-col items-center">
 
-<h1 class="text-3xl font-bold text-blue-700 mb-6">📈 Tech Giants Stocks</h1>
+<h1 class="text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">Tech Giants Stocks</h1>
 
 <div class="w-full max-w-6xl grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   <!-- Stock cards will be injected here -->
@@ -18,17 +43,40 @@
 <script>
 // Tech stocks data
 const stocks = [
-  { symbol: 'AAPL', name: 'Apple', price: 189.35, change: +1.24, icon: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
-  { symbol: 'MSFT', name: 'Microsoft', price: 347.89, change: -0.85, icon: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg' },
-  { symbol: 'GOOGL', name: 'Alphabet', price: 132.45, change: +2.12, icon: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg' },
-  { symbol: 'AMZN', name: 'Amazon', price: 135.67, change: -1.56, icon: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg' },
-  { symbol: 'META', name: 'Meta', price: 320.55, change: -1.02, icon: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Meta_Platforms_Inc._logo.svg' },
-  { symbol: 'TSLA', name: 'Tesla', price: 275.90, change: +3.45, icon: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg' },
-  { symbol: 'NVDA', name: 'Nvidia', price: 460.12, change: +4.23, icon: 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Nvidia_logo.svg' },
-  { symbol: 'TSMC', name: 'TSMC', price: 90.78, change: -0.65, icon: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/TSMC_logo.svg' },
-  { symbol: 'AMD', name: 'AMD', price: 105.34, change: +1.87, icon: 'https://upload.wikimedia.org/wikipedia/commons/2/24/AMD_Logo.svg' },
-  { symbol: 'PLTR', name: 'Palantir', price: 21.45, change: -0.42, icon: 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Palantir_Technologies_logo.svg' }
-];
+  { symbol: 'AAPL', name: 'Apple', price: 189.35, change: +1.24, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1280px-Apple_logo_black.svg.png', marketCap: '2.95T', pe: 29.8, volume: '58.2M', ceo: 'Tim Cook' },
+  { symbol: 'MSFT', name: 'Microsoft', price: 347.89, change: -0.85, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/MSFT_logo_png_grey.png/1920px-MSFT_logo_png_grey.png', marketCap: '2.58T', pe: 34.2, volume: '24.5M', ceo: 'Satya Nadella' },
+  { symbol: 'GOOGL', name: 'Alphabet', price: 132.45, change: +2.12, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Google_logo_%282010-2013%29.svg/1920px-Google_logo_%282010-2013%29.svg.png', marketCap: '1.67T', pe: 25.4, volume: '31.8M', ceo: 'Sundar Pichai' },
+  { symbol: 'AMZN', name: 'Amazon', price: 135.67, change: -1.56, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1920px-Amazon_logo.svg.png', marketCap: '1.41T', pe: 68.5, volume: '42.3M', ceo: 'Andy Jassy' },
+  { symbol: 'META', name: 'Meta', price: 320.55, change: -1.02, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/1920px-Meta_Platforms_Inc._logo.svg.png', marketCap: '815B', pe: 22.7, volume: '19.6M', ceo: 'Mark Zuckerberg' },
+  { symbol: 'TSLA', name: 'Tesla', price: 275.90, change: +3.45, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tesla_T_symbol.svg/1920px-Tesla_T_symbol.svg.png', marketCap: '875B', pe: 78.3, volume: '124.7M', ceo: 'Elon Musk' },
+  { symbol: 'NVDA', name: 'Nvidia', price: 460.12, change: +4.23, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/NVIDIA_logo.svg/1920px-NVIDIA_logo.svg.png', marketCap: '1.13T', pe: 52.1, volume: '48.9M', ceo: 'Jensen Huang' },
+  { symbol: 'TSMC', name: 'TSMC', price: 90.78, change: -0.65, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/TSMC_wordmark.svg/1920px-TSMC_wordmark.svg.png', marketCap: '471B', pe: 18.9, volume: '12.4M', ceo: 'C.C. Wei' },
+  { symbol: 'AMD', name: 'AMD', price: 105.34, change: +1.87, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/AMD_Logo.svg/1920px-AMD_Logo.svg.png', marketCap: '170B', pe: 142.5, volume: '67.3M', ceo: 'Lisa Su' },
+  { symbol: 'PLTR', name: 'Palantir', price: 21.45, change: -0.42, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Palantir_Technologies_logo.svg/1920px-Palantir_Technologies_logo.svg.png', marketCap: '45.6B', pe: 85.4, volume: '35.2M', ceo: 'Alex Karp' },
+  { symbol: 'NFLX', name: 'Netflix', price: 445.87, change: +2.34, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1920px-Netflix_2015_logo.svg.png', marketCap: '192B', pe: 41.2, volume: '8.7M', ceo: 'Ted Sarandos' },
+  { symbol: 'ADBE', name: 'Adobe', price: 565.23, change: -1.12, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Adobe_logo_and_wordmark_%282017%29.svg/1920px-Adobe_logo_and_wordmark_%282017%29.svg.png', marketCap: '258B', pe: 47.8, volume: '3.4M', ceo: 'Shantanu Narayen' },
+  { symbol: 'INTC', name: 'Intel', price: 45.67, change: +0.89, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Intel_logo_%282006-2020%29.svg/1920px-Intel_logo_%282006-2020%29.svg.png', marketCap: '189B', pe: 92.3, volume: '52.1M', ceo: 'Pat Gelsinger' },
+  { symbol: 'ORCL', name: 'Oracle', price: 112.34, change: +1.45, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Oracle_logo.svg/1920px-Oracle_logo.svg.png', marketCap: '312B', pe: 31.5, volume: '9.8M', ceo: 'Safra Catz' },
+  { symbol: 'CRM', name: 'Salesforce', price: 234.56, change: -0.78, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salesforce.com_logo.svg/1920px-Salesforce.com_logo.svg.png', marketCap: '228B', pe: 56.2, volume: '7.3M', ceo: 'Marc Benioff' },
+  { symbol: 'QCOM', name: 'Qualcomm', price: 145.89, change: +2.15, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Qualcomm-Logo.svg/1920px-Qualcomm-Logo.svg.png', marketCap: '163B', pe: 19.4, volume: '11.5M', ceo: 'Cristiano Amon' },
+  { symbol: 'IBM', name: 'IBM', price: 155.43, change: +0.67, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/1920px-IBM_logo.svg.png', marketCap: '143B', pe: 22.8, volume: '5.6M', ceo: 'Arvind Krishna' },
+  { symbol: 'CSCO', name: 'Cisco', price: 54.32, change: -0.45, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cisco_logo_blue_2016.svg/1920px-Cisco_logo_blue_2016.svg.png', marketCap: '219B', pe: 18.7, volume: '19.2M', ceo: 'Chuck Robbins' },
+  { symbol: 'AVGO', name: 'Broadcom', price: 875.65, change: +3.21, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Broadcom_logo_%282016-present%29.svg/1920px-Broadcom_logo_%282016-present%29.svg.png', marketCap: '408B', pe: 35.6, volume: '2.8M', ceo: 'Hock Tan' },
+  { symbol: 'NOW', name: 'ServiceNow', price: 698.45, change: +2.87, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/ServiceNow_logo.svg/1920px-ServiceNow_logo.svg.png', marketCap: '142B', pe: 98.7, volume: '1.9M', ceo: 'Bill McDermott' },
+  { symbol: 'SNOW', name: 'Snowflake', price: 165.78, change: -1.34, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Snowflake_Logo.svg/1920px-Snowflake_Logo.svg.png', marketCap: '52.4B', pe: 0, volume: '6.5M', ceo: 'Sridhar Ramaswamy' },
+  { symbol: 'UBER', name: 'Uber', price: 68.92, change: +1.56, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Uber_logo_2018.png/1920px-Uber_logo_2018.png', marketCap: '138B', pe: 45.3, volume: '28.4M', ceo: 'Dara Khosrowshahi' },
+  { symbol: 'SPOT', name: 'Spotify', price: 187.34, change: +2.45, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/1920px-Spotify_logo_without_text.svg.png', marketCap: '36.5B', pe: 0, volume: '4.2M', ceo: 'Daniel Ek' },
+  { symbol: 'SHOP', name: 'Shopify', price: 76.54, change: -0.98, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Shopify_logo_2018.svg/1920px-Shopify_logo_2018.svg.png', marketCap: '96.8B', pe: 0, volume: '9.7M', ceo: 'Tobi Lütke' },
+  { symbol: 'IONQ', name: 'IonQ', price: 12.85, change: +5.67, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/IonQ_corp_logo.svg/1920px-IonQ_corp_logo.svg.png', marketCap: '2.8B', pe: 0, volume: '15.3M', ceo: 'Peter Chapman' },
+  { symbol: 'RGTI', name: 'Rigetti', price: 8.43, change: +4.23, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Rigetti_Computing_logo.svg/1920px-Rigetti_Computing_logo.svg.png', marketCap: '1.5B', pe: 0, volume: '8.9M', ceo: 'Subodh Kulkarni' },
+  { symbol: 'TWLO', name: 'Twilio', price: 72.34, change: +1.23, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Twilio-logo-red.svg/1920px-Twilio-logo-red.svg.png', marketCap: '12.8B', pe: 0, volume: '3.1M', ceo: 'Jeff Lawson' },
+  { symbol: 'SQ', name: 'Block (Square)', price: 89.45, change: -0.87, icon: 'https://logo.clearbit.com/block.xyz', marketCap: '52.3B', pe: 0, volume: '11.6M', ceo: 'Jack Dorsey' },
+  { symbol: 'SNAP', name: 'Snap Inc.', price: 15.67, change: +2.34, icon: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1920px-Snapchat_logo.svg.png', marketCap: '25.1B', pe: 0, volume: '42.8M', ceo: 'Evan Spiegel' },
+  { symbol: 'ROKU', name: 'Roku', price: 78.92, change: +1.45, icon: 'https://logo.clearbit.com/roku.com', marketCap: '11.2B', pe: 0, volume: '7.4M', ceo: 'Anthony Wood' },
+  { symbol: 'COIN', name: 'Coinbase', price: 185.43, change: +3.56, icon: 'https://logo.clearbit.com/coinbase.com', marketCap: '44.6B', pe: 28.4, volume: '14.9M', ceo: 'Brian Armstrong' },
+  { symbol: 'MSTR', name: 'MicroStrategy', price: 325.67, change: +5.43, icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Strategy_logo_%282025%29.svg/1920px-Strategy_logo_%282025%29.svg.png', marketCap: '62.8B', pe: 0, volume: '22.3M', ceo: 'Phong Le' }
+
+];    
 
 // Reference to container
 const container = document.querySelector('div.grid');
@@ -42,19 +90,50 @@ function formatNumber(num) {
 function renderStocks() {
   container.innerHTML = '';
   stocks.forEach(stock => {
-    const card = document.createElement('div');
-    card.className = 'bg-white p-6 rounded-xl shadow-md flex flex-col items-center transition hover:shadow-xl';
+    const cardWrapper = document.createElement('div');
+    cardWrapper.className = 'flip-card h-48';
     
-    card.innerHTML = `
-      <img src="${stock.icon}" alt="${stock.name}" class="w-16 h-16 mb-4 object-contain">
-      <h2 class="text-xl font-bold text-gray-800">${stock.name} (${stock.symbol})</h2>
-      <p class="text-2xl font-semibold text-gray-900 mt-2">$${formatNumber(stock.price)}</p>
-      <p class="${stock.change >= 0 ? 'text-green-600' : 'text-red-600'} font-medium mt-1">
-        ${stock.change >= 0 ? '+' : ''}${formatNumber(stock.change)}
-      </p>
+    cardWrapper.innerHTML = `
+      <div class="flip-card-inner h-full">
+        <div class="flip-card-front bg-white p-3 rounded-lg shadow-md flex flex-col items-center justify-center transition-all duration-200 hover:shadow-xl cursor-pointer">
+          <img src="${stock.icon}" alt="${stock.name}" class="w-14 h-14 mb-2 object-contain">
+          <h2 class="text-sm font-bold text-gray-800">${stock.name} (${stock.symbol})</h2>
+          <p class="text-base font-semibold text-gray-900 mt-1">$${formatNumber(stock.price)}</p>
+          <p class="${stock.change >= 0 ? 'text-green-600' : 'text-red-600'} font-medium text-sm mt-1">
+            ${stock.change >= 0 ? '+' : ''}${formatNumber(stock.change)}
+          </p>
+        </div>
+        <div class="flip-card-back bg-gradient-to-br from-blue-500 to-purple-600 p-3 rounded-lg shadow-md flex flex-col items-center justify-center cursor-pointer text-white">
+          <h2 class="text-sm font-bold mb-2">${stock.name}</h2>
+          <p class="text-xs italic mb-2">CEO: ${stock.ceo}</p>
+          <div class="w-full space-y-1 text-xs">
+            <div class="flex justify-between">
+              <span class="font-medium">Market Cap:</span>
+              <span>${stock.marketCap}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">P/E Ratio:</span>
+              <span>${stock.pe > 0 ? stock.pe : 'N/A'}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Volume:</span>
+              <span>${stock.volume}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Day Change:</span>
+              <span class="${stock.change >= 0 ? 'text-green-200' : 'text-red-200'}">${stock.change >= 0 ? '+' : ''}${formatNumber(stock.change)} (${((stock.change / stock.price) * 100).toFixed(2)}%)</span>
+            </div>
+          </div>
+          <p class="text-xs mt-2 opacity-75">Click to flip back</p>
+        </div>
+      </div>
     `;
+    
+    cardWrapper.addEventListener('click', () => {
+      cardWrapper.classList.toggle('flipped');
+    });
 
-    container.appendChild(card);
+    container.appendChild(cardWrapper);
   });
 }
 
